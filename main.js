@@ -1,11 +1,9 @@
 const ctx = document.getElementById('myChart');
-
+// generate random stock data at fixed time interval between 2020 and 2023 
 var stockData=[]
-//stock data
 var timeData=[]
 let startDate = new Date("2020-05-30T23:50:21.817Z")
 let endDate = new Date("2023-05-30T23:50:21.817Z")
-//let interval = 730000
 let nData = 7300
 let deltaTime = Math.floor( ( endDate.getTime() - startDate.getTime() )/nData)
 console.log("deltaTime", deltaTime, startDate.getTime());
@@ -17,28 +15,13 @@ for (var i = 1; i <= nData; i++) {
 }
 console.log(newDate)
 
-//helper functions
-function convertTZ(dates, tzString) {
-  let res=[]
-  for(var i = 0; i<dates.length; i++)
-  {
-    var nd = new Date((typeof dates[i] === "string" ? new Date(dates[i]) : dates[i]).toLocaleString("en-US", {timeZone: tzString}));   
-    res.push(nd)
-  }
-  return res
-}
 
-
-
-
+// helper function- select data from a particular time range (user's choice)
 function getData(timeSeries, stockSeries, start, end){
   let index_begin = -1, index_end=-1
   console.log("length: ", timeSeries.length)
   for (var i = 0; i< timeSeries.length; i++)
   {
-    // let dt = new Date(timeSeries[i]);
-    // console.log(dt, start, timeSeries[i])
-    // console.log(i,dt>start)
     if (timeSeries[i]>=start && index_begin === -1) 
     {
       index_begin = i
@@ -55,23 +38,24 @@ function getData(timeSeries, stockSeries, start, end){
 }
 
 
-//creating chart
+//creating global variable for chart
 let chart = null;
+// creating global time zone variable for changing x axis
 let timezone="America/Chicago"
 timezone="UTC"
+
+// Generate chart for start and end range, plot at specified timezone (tz)
 function chartFunction(startDate,endDate, tz)
 {
-  let rangeStart=startDate
-  let rangeEnd=endDate
-  let newData=getData(timeData,stockData,rangeStart, rangeEnd)
+  let newData=getData(timeData,stockData,startDate, endDate)
   let newTimeData=newData[0]
   let newStockData=newData[1]
 
-
+  //destroy chart if it has been previously created. 
+  //this allows new chart with new data to be formed whenever date range changes.
   if (chart !== null)
   {
     chart.destroy()
-    
   } 
     chart = 
     new Chart(ctx, {
@@ -158,9 +142,7 @@ $(function(){
   {
     console.log(startDate,endDate,label)
     chartFunction(startDate,endDate, timezone)
-
   }
-
 );
 });
 
