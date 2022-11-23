@@ -1,20 +1,39 @@
+//const mt = require('moment-timezone');
+//creating global variable for chart
+let chart = null;
+// creating global time zone variable for changing x axis
+let timezone="UTC"
+let offsetms=0
+
+
 const ctx = document.getElementById('myChart');
 // generate random stock data at fixed time interval between 2020 and 2023 
 var stockData=[]
 var timeData=[]
-let startDate = new Date("2020-05-30T23:50:21.817Z")
-let endDate = new Date("2023-05-30T23:50:21.817Z")
+let startDate = new Date(Date.UTC(2020, 5, 30, 23, 50, 0))
+let endDate = new Date(Date.UTC(2023, 5, 30, 23, 50, 0))
 let nData = 7300
 let deltaTime = Math.floor( ( endDate.getTime() - startDate.getTime() )/nData)
 console.log("deltaTime", deltaTime, startDate.getTime());
 let newDate=null
 for (var i = 1; i <= nData; i++) {
    stockData.push(Math.random()*10);
+  // stockData.push(i%100*0.1); // used for testing 
    newDate = new Date(startDate.getTime()+deltaTime*i);
    timeData.push(newDate);
 }
 console.log(newDate)
 
+// helper function- select a specific time zone (user's choice)
+function selectTime(){
+  document.querySelector('#timezone').addEventListener('change', function() {
+  // what to do when the select option changes
+  console.log("run selectTime", this.value)
+  const userSelection = this.value; // e.g 'Tokyo' etc
+  timezone=this.value;
+  date_time_picker()
+})}
+selectTime()
 
 // helper function- select data from a particular time range (user's choice)
 function getData(timeSeries, stockSeries, start, end){
@@ -38,11 +57,7 @@ function getData(timeSeries, stockSeries, start, end){
 }
 
 
-//creating global variable for chart
-let chart = null;
-// creating global time zone variable for changing x axis
-let timezone="America/Chicago"
-timezone="UTC"
+
 
 // Generate chart for start and end range, plot at specified timezone (tz)
 function chartFunction(startDate,endDate, tz)
@@ -50,6 +65,23 @@ function chartFunction(startDate,endDate, tz)
   let newData=getData(timeData,stockData,startDate, endDate)
   let newTimeData=newData[0]
   let newStockData=newData[1]
+  console.log("TZ is", tz)
+  // get the zone offsets for this time, in minutes
+  // var offset = mt.tz.zone(tz).offset(now)*60*1000;
+  let offset=0
+  if (tz === "America/New York") offset = -5*-1*60*60*1000
+  if (tz === "Asia/Japan") offset = 8*-1*60*60*1000
+  if (tz === "UTC") offset=0
+  console.log(tz,offset) 
+
+  //change newTimeData to the correct timezone
+  const convertedTimeData = [...newTimeData]
+  convertedTimeData.forEach((date,index,arr)=>{
+    const nd = new Date(date.getTime()+offset);
+    console.log(date.getTime(), offset, nd.getTime())
+    arr[index]=nd
+  })
+
 
   //destroy chart if it has been previously created. 
   //this allows new chart with new data to be formed whenever date range changes.
@@ -61,7 +93,7 @@ function chartFunction(startDate,endDate, tz)
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: newTimeData,
+        labels: convertedTimeData,
         datasets: [{
           label:"stock",
           data: newStockData,
@@ -99,8 +131,7 @@ function chartFunction(startDate,endDate, tz)
 }
 
 
-//date time picker
-$(function(){
+function date_time_picker(){
   $("#demo").daterangepicker({
     showISOWeekNumbers: true,
     timePicker: true,
@@ -135,16 +166,17 @@ $(function(){
     linkedCalendars: true,
     showCustomRangeLabel: false,
     startDate: 1,
-    endDate: "December 31, 2016 @ h:mm A",
-    opens: "center"
-  },
-  function(startDate,endDate, label)
-  {
-    console.log(startDate,endDate,label)
-    chartFunction(startDate,endDate, timezone)
-  }
-);
-});
+    endDate: 2,
+    opens: "center",
+    timeZone: timezone
+    },
+    function(startDate,endDate, label)
+    {
 
-
+      console.log(startDate,endDate,label)
+      chartFunction(startDate,endDate, timezone)
+    }
+  );
+}
+date_time_picker()
 

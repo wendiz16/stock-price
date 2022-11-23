@@ -4,22 +4,31 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script> -->
-
-
   <script src="https://kit.fontawesome.com/2ef71f79fb.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./style.css">
+
   <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
   <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.1/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   <title>Stock Market</title>
 </head>
 <body>
   
   <h2> DATE AND TIME RANGE FOR STOCK</h2>
+  <div class="container">
+    <form action="">
+      <label for="timezone">Choose your timezone:</label>
+      <select name="timezone" id="timezone">
+        <option value="UTC">UTC</option>
+        <option value="America/New York">New York</option>
+        <option value="Asia/Japan">Tokyo</option>
+      </select>
+    </form>
+  </div>
   <input type="text" id="demo" name="datefilter" value="" />
 
   <div>
@@ -29,10 +38,10 @@
   
   
   <script src="./main.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
+  
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script> -->
+  
 
 </body>
 
