@@ -10,46 +10,42 @@ const ctx = document.getElementById('myChart');
 // generate random stock data at fixed time interval between 2020 and 2023 
 var stockData=[]
 var timeData=[]
-let startDate = new Date(Date.UTC(2020, 5, 30, 23, 50, 0))
+let startDate = new Date(Date.UTC(2020, 5, 30, 23, 50, 0)) //june 30
 let endDate = new Date(Date.UTC(2023, 5, 30, 23, 50, 0))
 let nData = 7300
 let deltaTime = Math.floor( ( endDate.getTime() - startDate.getTime() )/nData)
-console.log("deltaTime", deltaTime, startDate.getTime());
+
 let newDate=null
-for (var i = 1; i <= nData; i++) {
+for (var i = 0; i < nData; i++) {
    stockData.push(Math.random()*10);
   // stockData.push(i%100*0.1); // used for testing 
    newDate = new Date(startDate.getTime()+deltaTime*i);
    timeData.push(newDate);
 }
-console.log(newDate)
+
 
 // helper function- select a specific time zone (user's choice)
 function selectTime(){
   document.querySelector('#timezone').addEventListener('change', function() {
   // what to do when the select option changes
-  console.log("run selectTime", this.value)
-  const userSelection = this.value; // e.g 'Tokyo' etc
-  timezone=this.value;
+  timezone=this.value;// e.g 'Tokyo' etc
   date_time_picker()
 })}
 selectTime()
 
 // helper function- select data from a particular time range (user's choice)
 function getData(timeSeries, stockSeries, start, end){
-  let index_begin = -1, index_end=-1
-  console.log("length: ", timeSeries.length)
-  for (var i = 0; i< timeSeries.length; i++)
+  let length = timeSeries.length
+  let index_begin = -1, index_end=length
+  for (var i = 0; i<length; i++)
   {
     if (timeSeries[i]>=start && index_begin === -1) 
     {
       index_begin = i
-      console.log("begin",index_begin)
     }
-    if (timeSeries[i]>end)
+    if (timeSeries[i]>end )
     {
       index_end = i
-      console.log("end",index_end)
       break
     }
   }
@@ -65,20 +61,17 @@ function chartFunction(startDate,endDate, tz)
   let newData=getData(timeData,stockData,startDate, endDate)
   let newTimeData=newData[0]
   let newStockData=newData[1]
-  console.log("TZ is", tz)
   // get the zone offsets for this time, in minutes
   // var offset = mt.tz.zone(tz).offset(now)*60*1000;
   let offset=0
-  if (tz === "America/New York") offset = -5*-1*60*60*1000
-  if (tz === "Asia/Japan") offset = 8*-1*60*60*1000
+  if (tz === "America/New York") offset = -5*60*60*1000
+  if (tz === "Asia/Japan") offset = 8*60*60*1000
   if (tz === "UTC") offset=0
-  console.log(tz,offset) 
 
   //change newTimeData to the correct timezone
   const convertedTimeData = [...newTimeData]
   convertedTimeData.forEach((date,index,arr)=>{
     const nd = new Date(date.getTime()+offset);
-    console.log(date.getTime(), offset, nd.getTime())
     arr[index]=nd
   })
 
@@ -172,8 +165,6 @@ function date_time_picker(){
     },
     function(startDate,endDate, label)
     {
-
-      console.log(startDate,endDate,label)
       chartFunction(startDate,endDate, timezone)
     }
   );
